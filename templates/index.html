@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Quantum Kernel Demo</title>
+</head>
+<body>
+    <h2>Quantum Kernel SVM Demo</h2>
+
+    <label for="feature_map">Feature Map:</label>
+    <select id="feature_map" name="feature_map">
+        <option value="zz">ZZ Feature Map</option>
+        <option value="pauli">Pauli Feature Map</option>
+    </select><br><br>
+
+    <label for="depth">Feature Map Depth:</label>
+    <input type="number" id="depth" name="depth" min="1" max="5" value="2"><br><br>
+
+    <label for="ent">Entanglement:</label>
+    <select id="ent" name="ent">
+        <option value="full">Full</option>
+        <option value="linear">Linear</option>
+    </select><br><br>
+
+    <button onclick="runSimulation()">Run Simulation</button>
+
+    <h3>Result:</h3>
+    <p id="acc"></p>
+    <img id="plot" src="" alt="Result plot will appear here" width="700">
+
+    <script>
+    async function runSimulation() {
+        const feature_map = document.getElementById('feature_map').value;
+        const depth = document.getElementById('depth').value;
+        const ent = document.getElementById('ent').value;
+
+        const response = await fetch('/run_kernel', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({feature_map, depth, ent})
+        });
+
+        const data = await response.json();
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        document.getElementById('plot').src = data.plot_url;
+        document.getElementById('acc').innerText = "Accuracy: " + data.accuracy;
+    }
+    </script>
+</body>
+</html>
