@@ -2,52 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Interactive Quantum Kernel Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Kernel SVM Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Quantum Kernel SVM Demo</h2>
+    <div class="container">
+        <div class="header">
+            <h1>Quantum Kernel SVM</h1>
+            <p>Explore quantum machine learning with interactive kernel methods</p>
+        </div>
 
-    <label for="feature_map">Feature Map:</label>
-    <select id="feature_map" name="feature_map">
-        <option value="zz">ZZ Feature Map</option>
-        <option value="pauli">Pauli Feature Map</option>
-    </select><br><br>
+        <div class="controls-panel">
+            <div class="control-group">
+                <div class="form-group">
+                    <label for="feature_map">Feature Map</label>
+                    <select id="feature_map" name="feature_map">
+                        <option value="zz">ZZ Feature Map</option>
+                        <option value="pauli">Pauli Feature Map</option>
+                    </select>
+                </div>
 
-    <label for="depth">Feature Map Depth:</label>
-    <input type="number" id="depth" name="depth" min="1" max="5" value="2"><br><br>
+                <div class="form-group">
+                    <label for="depth">Circuit Depth</label>
+                    <input type="number" id="depth" name="depth" min="1" max="5" value="2">
+                </div>
 
-    <label for="ent">Entanglement:</label>
-    <select id="ent" name="ent">
-        <option value="full">Full</option>
-        <option value="linear">Linear</option>
-    </select><br><br>
+                <div class="form-group">
+                    <label for="ent">Entanglement</label>
+                    <select id="ent" name="ent">
+                        <option value="full">Full</option>
+                        <option value="linear">Linear</option>
+                    </select>
+                </div>
 
-    <button onclick="runSimulation()">Run Simulation</button>
+                <button id="run-button" class="run-button">
+                    <span class="button-text">Run Simulation</span>
+                </button>
+            </div>
+        </div>
 
-    <h3>Result:</h3>
-    <p id="acc"></p>
-    <img id="plot" src="" alt="Result plot will appear here" width="700">
+        <!-- Loading Animation -->
+        <div id="loading-container" class="loading-container">
+            <div class="quantum-spinner"></div>
+            <div id="loading-text" class="loading-text">Initializing quantum circuits...</div>
+        </div>
 
-    <script>
-    async function runSimulation() {
-        const feature_map = document.getElementById('feature_map').value;
-        const depth = document.getElementById('depth').value;
-        const ent = document.getElementById('ent').value;
+        <!-- Results Section -->
+        <div id="results-section" class="results-section" style="display: none;">
+            <h3>Results</h3>
+            <div id="accuracy-display" class="accuracy-display"></div>
+            <div class="plot-container">
+                <img id="plot-image" src="" alt="Quantum kernel decision boundary" />
+            </div>
+        </div>
+    </div>
 
-        const response = await fetch('/run_kernel', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({feature_map, depth, ent})
-        });
-
-        const data = await response.json();
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-        document.getElementById('plot').src = data.plot_url;
-        document.getElementById('acc').innerText = "Accuracy: " + data.accuracy;
-    }
-    </script>
+    <script src="{{ url_for('static', filename='quantum-demo.js') }}"></script>
 </body>
 </html>
