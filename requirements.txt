@@ -2,3 +2,4 @@ flask
 matplotlib
 scikit-learn
 qiskit
+gunicorn==21.2.0
