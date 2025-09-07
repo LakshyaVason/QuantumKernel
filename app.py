@@ -11,6 +11,11 @@ from qiskit.quantum_info import Statevector
 
 app = Flask(__name__)
 
+# Enable static file serving for CSS and JS
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return app.send_static_file(filename)
+
 # ----------------- Dataset -----------------
 X, y = make_moons(n_samples=60, noise=0.2, random_state=42)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -57,6 +62,11 @@ def plot_decision_boundary(clf, X_train, y_train, feature_map, ax):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# Add favicon route to prevent 404s
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204
 
 @app.route('/run_kernel', methods=['POST'])
 def run_kernel():
